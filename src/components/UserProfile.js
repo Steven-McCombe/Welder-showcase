@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { doc, setDoc, getDoc } from "firebase/firestore"; 
 import { getAuth } from "firebase/auth";
-import { db } from './firebase'; 
+import { db } from 'firebase'; 
 
 function UserProfile() {
   const { register, handleSubmit, setValue } = useForm();
