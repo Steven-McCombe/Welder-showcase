@@ -1,20 +1,26 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-require('dotenv').config();
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.FIREBASEAPI,
+  apiKey: "AIzaSyD66iZFyz0Y2r-Gq83ZugtE0fDOwP0tgDE",
   authDomain: "talentshowcase-3a90c.firebaseapp.com",
-  databaseURL: "https://talentshowcase-3a90c.firebaseio.com",
+  databaseURL: "https://talentshowcase-3a90c-default-rtdb.firebaseio.com",
   projectId: "talentshowcase-3a90c",
   storageBucket: "talentshowcase-3a90c.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID",
-  measurementId: "G-MEASUREMENT_ID",
+  messagingSenderId: "542040577117",
+  appId: "1:542040577117:web:4b5df949173921944469b4",
+  measurementId: "G-17YN3227Y2"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-export const auth = firebase.auth();
-export const db = firebase.firestore();
+// Initialize Authentication and Firestore
+const auth = getAuth();
+const db = getFirestore();
+
+export { auth, db };

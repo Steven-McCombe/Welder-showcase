@@ -1,9 +1,17 @@
 import React from 'react';
+import SignIn from '../SignIn';
+import SignUp from '../SignUp';
+import SignOut from '../SignOut';
 
 function HomePage() {
-    return (
-        <h1>Home Page</h1>
-    );
+  return (
+    <div>
+      <h1>Home Page</h1>
+      <SignIn />
+      <SignUp />
+      <SignOut />
+    </div>
+  );
 }
 
 export default HomePage;
