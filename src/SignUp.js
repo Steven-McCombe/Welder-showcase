@@ -36,7 +36,7 @@ const Signup = () => {
   return (
     <MDBContainer fluid className="my-3">
       <MDBRow>
-        <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center justify-content-center'>
+        <MDBCol md='6' className='form-column d-flex flex-column align-items-center justify-content-center'>
           <p className="h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
           <div className="d-flex flex-row align-items-center mb-4">
@@ -68,8 +68,8 @@ const Signup = () => {
           <MDBBtn className='mb-4' size='lg' onClick={signup}>Register</MDBBtn>
         </MDBCol>
 
-        <MDBCol col='10' md='6' className="d-flex align-items-center">
-          <img src="https://source.unsplash.com/emqnSQwQQDo" className="img-fluid rounded mb-3 shadow" alt="Bedroom" style={{ width: '75%', height: '75%' }} />
+        <MDBCol md='6' style={{ position: "relative" }} className="d-flex align-items-center justify-content-center">
+          <img src="https://source.unsplash.com/6o-K6uyKD2U" className="img-fluid rounded mb-3 shadow" alt="Bedroom" style={{ width: '100vw', height: '100vh' }} />
         </MDBCol>
       </MDBRow>
     </MDBContainer>
