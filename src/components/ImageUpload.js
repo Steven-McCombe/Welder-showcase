@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-const ImageUpload = ({ handleImageURL }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
+const ImageUpload = ({ handleImageURL, single }) => {
+  const [selectedImages, setSelectedImages] = useState([]);
 
   const handleImageUpload = event => {
-    setSelectedImage(event.target.files[0]);
+    setSelectedImages([...event.target.files]);
   };
 
   const handleUploadSubmit = () => {
-    if (selectedImage) {
-      uploadImage(selectedImage);
+    if (selectedImages) {
+      selectedImages.forEach(uploadImage);
     }
   };
 
@@ -39,7 +39,7 @@ const ImageUpload = ({ handleImageURL }) => {
 
   return (
     <div>
-      <input type="file" onChange={handleImageUpload} />
+      <input type="file" onChange={handleImageUpload} multiple={!single} />
       <button onClick={handleUploadSubmit}>Upload</button>
     </div>
   );
