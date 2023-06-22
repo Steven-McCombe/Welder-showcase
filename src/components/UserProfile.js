@@ -48,46 +48,55 @@ function UserProfile() {
   if (loading) {
     return <div>Loading...</div>;
   }
+  
+  const handleImageURL = (url) => {
+    // Logic to handle the image URL
+  };
+  
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>
-        Name:
-        <input {...register('name')} type="text" />
-      </label>
+    <div>
+      <h1>User Profile</h1>
+      <ImageUpload handleImageURL={handleImageURL} />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <label>
+          Name:
+          <input {...register('name')} type="text" />
+        </label>
 
-      <label>
-        Location:
-        <input {...register('location')} type="text" />
-      </label>
+        <label>
+          Location:
+          <input {...register('location')} type="text" />
+        </label>
 
-      <label>
-        Years of Experience:
-        <input {...register('yearsOfExperience')} type="number" min="0" />
-      </label>
+        <label>
+          Years of Experience:
+          <input {...register('yearsOfExperience')} type="number" min="0" />
+        </label>
 
-      <label>
-        Certifications:
-        <input {...register('certifications')} type="text" />
-      </label>
+        <label>
+          Certifications:
+          <input {...register('certifications')} type="text" />
+        </label>
 
-      <label>
-        About Me:
-        <textarea {...register('aboutMe')} />
-      </label>
+        <label>
+          About Me:
+          <textarea {...register('aboutMe')} />
+        </label>
 
-      <label>
-        Upload Profile Picture:
-        <ImageUpload handleImageURL={handleProfilePictureURL} single={true} />
-      </label>
+        <label>
+          Phone Number:
+          <input {...register('phoneNumber')} type="tel" />
+        </label>
 
-      <label>
-        Upload Your Work Gallery:
-        <ImageUpload handleImageURL={handleGalleryURLs} single={false} />
-      </label>
+        <label>
+          Email:
+          <input {...register('email')} type="email" />
+        </label>
 
-      <input type="submit" />
-    </form>
+        <input type="submit" />
+      </form>
+    </div>
   );
 }
 
