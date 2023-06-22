@@ -1,6 +1,7 @@
 // App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css'
 import UserProfile from './components/UserProfile'
 import WelderList from './components/WelderList';
 import WelderProfile from './components/WelderProfile';
