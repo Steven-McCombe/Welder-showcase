@@ -4,10 +4,13 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 import ImageUpload from './ImageUpload';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import Occupations from '../Lists/Occupations'
 
 function UserProfile() {
   const { register, handleSubmit, setValue } = useForm();
   const [loading, setLoading] = useState(true);
+  const [city, setCity] = useState('');
   const auth = getAuth();
   
   const handleProfilePictureURL = (url) => {
@@ -22,6 +25,7 @@ function UserProfile() {
 
   // This function is called when the form is submitted
   const onSubmit = async (data) => {
+    data.city = city;
     await setDoc(doc(db, "users", auth.currentUser.uid), data);
   };
   
@@ -63,12 +67,29 @@ function UserProfile() {
           Name:
           <input {...register('name')} type="text" />
         </label>
-
         <label>
-          Location:
-          <input {...register('location')} type="text" />
+          City:
+          <GooglePlacesAutocomplete
+            selectProps={{
+              city,
+              onChange: setCity,
+            }}
+            autocompletionRequest={{
+              types: ['(cities)'],
+            }}
+          />
         </label>
 
+            <label>
+              Occupation:
+              <select {...register('occupation')}>
+                {Occupations.map((occupation, index) => (
+                  <option value={occupation} key={index}>
+                    {occupation}
+                  </option>
+                ))}
+              </select>
+            </label>
         <label>
           Years of Experience:
           <input {...register('yearsOfExperience')} type="number" min="0" />
