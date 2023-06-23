@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import ImageUpload from './ImageUpload';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Occupations from '../Lists/Occupations'
+import { MDBBtn, MDBContainer, MDBInput, MDBTextArea } from 'mdb-react-ui-kit';
 
 function UserProfile() {
   const { register, handleSubmit, setValue } = useForm();
@@ -59,16 +60,15 @@ function UserProfile() {
   
 
   return (
-    <div>
+    <MDBContainer>
       <h1>User Profile</h1>
       <ImageUpload handleImageURL={handleImageURL} />
+      <MDBContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>
-          Name:
-          <input {...register('name')} type="text" />
-        </label>
-        <label>
-          City:
+
+          <MDBInput {...register('name')} label='Full Name' id='typeText' type='text' />
+
+
           <GooglePlacesAutocomplete
             selectProps={{
               city,
@@ -78,7 +78,7 @@ function UserProfile() {
               types: ['(cities)'],
             }}
           />
-        </label>
+
 
             <label>
               Occupation:
@@ -90,34 +90,25 @@ function UserProfile() {
                 ))}
               </select>
             </label>
-        <label>
-          Years of Experience:
-          <input {...register('yearsOfExperience')} type="number" min="0" />
-        </label>
 
-        <label>
-          Certifications:
-          <input {...register('certifications')} type="text" />
-        </label>
+          <MDBInput {...register('yearsOfExperience')} label='Years of Experience' id='typeNumber' type='number'/>
 
-        <label>
-          About Me:
-          <textarea {...register('aboutMe')} />
-        </label>
 
-        <label>
-          Phone Number:
-          <input {...register('phoneNumber')} type="tel" />
-        </label>
 
-        <label>
-          Email:
-          <input {...register('email')} type="email" />
-        </label>
+        <MDBInput {...register('certifications')} type="text" label='Licenses/Certifications'/>
+ 
 
-        <input type="submit" />
+
+        <MDBTextArea {...register('aboutMe')} label='About Me' id='textAreaExample' rows={6} />
+
+        <MDBInput {...register('phoneNumber')} label='Phone number' id='typePhone' type='tel' />
+        
+        <MDBInput {...register('email')} label='Email' id='typeEmail' type='email' />
+
+        <MDBBtn type="submit" label="Update Profile"/>
       </form>
-    </div>
+      </MDBContainer>
+    </MDBContainer>
   );
 }
 
