@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, documentId, deleteDoc, deleteField } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 import ProfileImageUpload from './ProfileImageUpload';
@@ -16,15 +16,39 @@ function UserRegister({ isScriptLoadSucceed }) {
   const [formData, setFormData] = useState({});
   const [address, setAddress] = useState('');
   const [profilePictureURL, setProfilePictureURL] = useState('');
-  const [galleryURLs, setGallery] = useState([]);
+  const [galleryURLs, setGalleryURLs] = useState([]);
   const auth = getAuth();
 
   const handleProfilePictureURL = (url) => {
-    setProfilePictureURL(url);
+    const cleanedURL = url.replace('//', '/');
+    setProfilePictureURL(cleanedURL);
   };
+  
 
   const handleImageURLs = (url) => {
-    setGallery(prevGallery => [...prevGallery, url]);
+    setGalleryURLs(prevGallery => [...prevGallery, url]);
+  };
+
+  const deleteProfilePic = () => {
+    const storageRef = doc(db, 'images', profilePictureURL);
+    deleteDoc(storageRef)
+      .then(() => {
+        setProfilePictureURL('');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const deleteGalleryPic = (picUrl) => {
+    const storageRef = doc(db, 'images', picUrl.replace('//', '/'));
+    deleteDoc(storageRef)
+      .then(() => {
+        setGalleryURLs(prevGallery => prevGallery.filter(url => url !== picUrl));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const onSubmit = async (data) => {
@@ -73,6 +97,13 @@ function UserRegister({ isScriptLoadSucceed }) {
     <MDBContainer>
       <h1>User Profile</h1>
       <ProfileImageUpload handleImageURL={handleProfilePictureURL} />
+      {profilePictureURL && (
+  <div>
+    <img src={profilePictureURL} alt="Profile pic" />
+    <button onClick={deleteProfilePic}>Delete Profile Picture</button>
+  </div>
+)}
+
       <MDBContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
           <MDBInput {...register('profilePic')} type='hidden' />  
@@ -116,6 +147,13 @@ function UserRegister({ isScriptLoadSucceed }) {
           <MDBInput {...register('phoneNumber')} label='Phone number' id='typePhone' type='tel' />
           <MDBInput {...register('email')} label='Email' id='typeEmail' type='email' />
           <GalleryUpload handleImageURLs={handleImageURLs} />
+{galleryURLs.map((url, index) => (
+  <div key={index}>
+    <img src={url} alt={`Gallery pic ${index}`} />
+    <button onClick={() => deleteGalleryPic(url)}>Delete Picture</button>
+  </div>
+))}
+
           <MDBBtn type="submit" label="Update Profile"/>
           
       </form>
