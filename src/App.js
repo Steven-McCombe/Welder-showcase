@@ -10,13 +10,14 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 
 function App() {
+  
   return (
     <Router>
       <Routes>
       <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/userregister" element={<UserRegister />} />
+        <Route path="/userregister" element={<UserRegister isScriptLoadSucceed={true} />} />
         <Route path="/userlist" element={<UserList />}/>
         <Route path="/userprofile/:id" element={<UserProfile/>}/>
       </Routes>
