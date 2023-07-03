@@ -17,6 +17,14 @@ const firebaseConfig = {
   measurementId: "G-17YN3227Y2"
 };
 
+if (process.env.NODE_ENV === 'production') {
+  // In production, we want to load the google maps API
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`;
+  script.async = true;
+  document.body.appendChild(script);
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
