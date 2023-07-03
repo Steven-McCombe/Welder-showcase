@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-const ImageUpload = ({ handleImageURL, single }) => {
+const GalleryUpload = ({ handleImageURLs }) => {
   const [selectedImages, setSelectedImages] = useState([]);
 
   const handleImageUpload = event => {
@@ -9,7 +9,7 @@ const ImageUpload = ({ handleImageURL, single }) => {
   };
 
   const handleUploadSubmit = () => {
-    if (selectedImages) {
+    if (selectedImages.length > 0) {
       selectedImages.forEach(uploadImage);
     }
   };
@@ -31,7 +31,7 @@ const ImageUpload = ({ handleImageURL, single }) => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log('File available at', downloadURL);
-          handleImageURL(downloadURL);
+          handleImageURLs(downloadURL); // this should handle adding the URL to a gallery array
         });
       }
     );
@@ -39,10 +39,10 @@ const ImageUpload = ({ handleImageURL, single }) => {
 
   return (
     <div>
-      <input type="file" onChange={handleImageUpload} multiple={!single} />
+      <input type="file" onChange={handleImageUpload} multiple={true} />
       <button onClick={handleUploadSubmit}>Upload</button>
     </div>
   );
 };
 
-export default ImageUpload;
+export default GalleryUpload;

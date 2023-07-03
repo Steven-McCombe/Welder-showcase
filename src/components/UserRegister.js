@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { doc, setDoc, getDoc } from 'firebase/firestore'; 
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
-import ImageUpload from './ImageUpload';
+import ProfileImageUpload from './ProfileImageUpload';
+import GalleryUpload from './GalleryUpload';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Occupations from '../Lists/Occupations';
 import { MDBBtn, MDBContainer, MDBInput, MDBTextArea } from 'mdb-react-ui-kit';
@@ -14,19 +15,20 @@ function UserRegister({ isScriptLoadSucceed }) {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({});
   const [address, setAddress] = useState('');
+  const [profilePictureURL, setProfilePictureURL] = useState('');
+  const [galleryURLs, setGallery] = useState([]);
   const auth = getAuth();
 
-  
   const handleProfilePictureURL = (url) => {
-    console.log(url);
+    setProfilePictureURL(url);
   };
 
-  const handleGalleryURLs = (urls) => {
-    console.log(urls);
+  const handleImageURLs = (url) => {
+    setGallery(prevGallery => [...prevGallery, url]);
   };
 
   const onSubmit = async (data) => {
-    data.address = address || ""; // Set address to an empty string if it's undefined
+    data.address = address || "";
     data.name = data.name || "";
     data.occupation = data.occupation || "";
     data.yearsOfExperience = data.yearsOfExperience || 0;
@@ -34,10 +36,12 @@ function UserRegister({ isScriptLoadSucceed }) {
     data.aboutMe = data.aboutMe || "";
     data.phoneNumber = data.phoneNumber || "";
     data.email = data.email || "";
-    
+    data.profilePic = profilePictureURL || "";
+    data.gallery = galleryURLs.length > 0 ? galleryURLs : [];
+
     await setDoc(doc(db, "users", auth.currentUser.uid), data);
   };
-  
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (auth.currentUser) {
@@ -49,7 +53,7 @@ function UserRegister({ isScriptLoadSucceed }) {
           for (const [key, value] of Object.entries(fetchedData)) {
             setValue(key, value);
           }
-          setFormData(fetchedData);  // Store fetched data in state
+          setFormData(fetchedData);
         }
       }
 
@@ -59,23 +63,20 @@ function UserRegister({ isScriptLoadSucceed }) {
     fetchProfile();
   }, [setValue, auth.currentUser]);
 
-  
   if (loading) {
     return <div>Loading...</div>;
   }
-  
-  const handleImageURL = (url) => {
-    // Logic to handle the image URL
-  };
+
 
   return (
     !isScriptLoadSucceed && (
     <MDBContainer>
       <h1>User Profile</h1>
-      <ImageUpload handleImageURL={handleImageURL} />
+      <ProfileImageUpload handleImageURL={handleProfilePictureURL} />
       <MDBContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-
+          <MDBInput {...register('profilePic')} type='hidden' />  
+          <MDBInput {...register('gallery')} type='hidden' />  
           <MDBInput {...register('name')} label='Full Name' id='typeText' type='text' />
 
           <GooglePlacesAutocomplete
@@ -114,6 +115,7 @@ function UserRegister({ isScriptLoadSucceed }) {
       />
           <MDBInput {...register('phoneNumber')} label='Phone number' id='typePhone' type='tel' />
           <MDBInput {...register('email')} label='Email' id='typeEmail' type='email' />
+          <GalleryUpload handleImageURLs={handleImageURLs} />
           <MDBBtn type="submit" label="Update Profile"/>
           
       </form>
