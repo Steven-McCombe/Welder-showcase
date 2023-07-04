@@ -101,7 +101,7 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
         <ProfileImageUpload handleImageURL={handleProfilePictureURL} />
         {profilePictureURL && (
           <div className="profile-picture-container">
-            <img src={profilePictureURL} alt="Profile pic" className="profile-picture" />
+            <img src={profilePictureURL} alt="Profile pic" className="profile-picture " />
             <button onClick={deleteProfilePic} className="delete-button">
               Delete Profile Picture
             </button>
