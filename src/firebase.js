@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -23,4 +23,9 @@ const analytics = getAnalytics(app);
 const auth = getAuth();
 const db = getFirestore();
 
-export { auth, db };
+// Set up authentication state change listener
+const onAuthStateChange = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};
+
+export { auth, db, onAuthStateChange };

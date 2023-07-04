@@ -9,7 +9,7 @@ import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Occupations from '../Lists/Occupations';
 import { MDBBtn, MDBContainer, MDBInput, MDBTextArea } from 'mdb-react-ui-kit';
 import makeAsyncScriptLoader from 'react-async-script';
-
+import './Styling/UserRegister.css'
 const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
   console.log(isScriptLoadSucceed)
   
@@ -72,18 +72,20 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
       if (auth.currentUser) {
         const docRef = doc(db, 'users', auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        
+    
         if (docSnap.exists()) {
           const fetchedData = docSnap.data();
           for (const [key, value] of Object.entries(fetchedData)) {
             setValue(key, value);
           }
           setFormData(fetchedData);
+          setProfilePictureURL(fetchedData.profilePic || '');
+          setGalleryURLs(fetchedData.gallery || []);
         }
       } else {
         console.log("No Auth");
       }
-  
+    
       setLoading(false);
     };
   
@@ -97,69 +99,69 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
 
   return (
     isScriptLoadSucceed && (
-      <MDBContainer>
+      <MDBContainer className="user-register-container">
         <h1>User Profile</h1>
         <ProfileImageUpload handleImageURL={handleProfilePictureURL} />
         {profilePictureURL && (
-          <div>
-            <img src={profilePictureURL} alt="Profile pic" />
-            <button onClick={deleteProfilePic}>Delete Profile Picture</button>
+          <div className="profile-picture-container">
+            <img src={profilePictureURL} alt="Profile pic" className="profile-picture" />
+            <button onClick={deleteProfilePic} className="delete-button">Delete Profile Picture</button>
           </div>
         )}
 
-        <MDBContainer>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <MDBInput {...register('profilePic')} type="hidden" />
-            <MDBInput {...register('gallery')} type="hidden" />
-            <MDBInput {...register('name')} label="Full Name" id="typeText" type="text" />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <MDBInput {...register('profilePic')} type="hidden" />
+          <MDBInput {...register('gallery')} type="hidden" />
+          <MDBInput {...register('name')} label="Full Name" id="typeText" type="text" />
 
-            <GooglePlacesAutocomplete
-              selectProps={{
-                address,
-                onChange: setAddress,
-              }}
-              apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
-              autocompletionRequest={{
-                componentRestrictions: {
-                  country: ['us'],
-                },
-              }}
-            />
+          <GooglePlacesAutocomplete
+            selectProps={{
+              address,
+              onChange: setAddress,
+            }}
+            apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+            autocompletionRequest={{
+              componentRestrictions: {
+                country: ['us'],
+              },
+            }}
+            className="google-places-autocomplete"
+          />
 
-            <label>
-              Occupation:
-              <select {...register('occupation')}>
-                {Occupations.map((occupation, index) => (
-                  <option value={occupation} key={index}>
-                    {occupation}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <label className="occupation-label">
+            Occupation:
+            <select {...register('occupation')} className="occupation-select">
+              {Occupations.map((occupation, index) => (
+                <option value={occupation} key={index}>
+                  {occupation}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <MDBInput {...register('yearsOfExperience')} label="Years of Experience" id="typeNumber" type="number" />
+          <MDBInput {...register('yearsOfExperience')} label="Years of Experience" id="typeNumber" type="number" />
 
-            <MDBInput {...register('certifications')} type="text" label="Licenses/Certifications" />
-            <MDBTextArea
-              {...register('aboutMe')}
-              label="About Me"
-              id="textAreaExample"
-              rows={6}
-              defaultValue={formData.aboutMe} // Use fetched data as defaultValue
-            />
-            <MDBInput {...register('phoneNumber')} label="Phone number" id="typePhone" type="tel" />
-            <MDBInput {...register('email')} label="Email" id="typeEmail" type="email" />
-            <GalleryUpload handleImageURLs={handleImageURLs} />
-            {galleryURLs.map((url, index) => (
-              <div key={index}>
-                <img src={url} alt={`Gallery pic ${index}`} />
-                <button onClick={() => deleteGalleryPic(url)}>Delete Picture</button>
-              </div>
-            ))}
+          <MDBInput {...register('certifications')} type="text" label="Licenses/Certifications" />
+          <MDBTextArea
+            {...register('aboutMe')}
+            label="About Me"
+            id="textAreaExample"
+            rows={6}
+            value={formData.aboutMe}
+            className="about-me-textarea"
+          />
+          <MDBInput {...register('phoneNumber')} label="Phone number" id="typePhone" type="tel" />
+          <MDBInput {...register('email')} label="Email" id="typeEmail" type="email" />
+          <GalleryUpload handleImageURLs={handleImageURLs} />
+          {galleryURLs.map((url, index) => (
+            <div key={index} className="gallery-image-container">
+              <img src={url} alt={`Gallery pic ${index}`} className="gallery-image" />
+              <button onClick={() => deleteGalleryPic(url)} className="delete-button">Delete Picture</button>
+            </div>
+          ))}
 
-            <MDBBtn type="submit" label="Update Profile" />
-          </form>
-        </MDBContainer>
+          <MDBBtn type="submit" label="Update Profile" className="submit-button" />
+        </form>
       </MDBContainer>
     )
   );
