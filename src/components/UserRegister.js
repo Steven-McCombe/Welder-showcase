@@ -9,14 +9,13 @@ import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Occupations from '../Lists/Occupations';
 import { MDBBtn, MDBContainer, MDBInput, MDBTextArea } from 'mdb-react-ui-kit';
 import makeAsyncScriptLoader from 'react-async-script';
-import './Styling/UserRegister.css'
+import './Styling/UserRegister.css';
+
 const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
-  console.log(isScriptLoadSucceed)
-  
   const { register, handleSubmit, setValue, getValues } = useForm();
+  const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({});
-  const [address, setAddress] = useState('');
   const [profilePictureURL, setProfilePictureURL] = useState('');
   const [galleryURLs, setGalleryURLs] = useState([]);
   const auth = getAuth();
@@ -27,7 +26,7 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
   };
 
   const handleImageURLs = (url) => {
-    setGalleryURLs(prevGallery => [...prevGallery, url]);
+    setGalleryURLs((prevGallery) => [...prevGallery, url]);
   };
 
   const deleteProfilePic = () => {
@@ -45,7 +44,7 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
     const storageRef = doc(db, 'images', picUrl.replace('//', '/'));
     deleteDoc(storageRef)
       .then(() => {
-        setGalleryURLs(prevGallery => prevGallery.filter(url => url !== picUrl));
+        setGalleryURLs((prevGallery) => prevGallery.filter((url) => url !== picUrl));
       })
       .catch((error) => {
         console.error(error);
@@ -53,7 +52,6 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
   };
 
   const onSubmit = async (data) => {
-    data.address = address || '';
     data.name = data.name || '';
     data.occupation = data.occupation || '';
     data.yearsOfExperience = data.yearsOfExperience || 0;
@@ -72,26 +70,25 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
       if (auth.currentUser) {
         const docRef = doc(db, 'users', auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-    
+
         if (docSnap.exists()) {
           const fetchedData = docSnap.data();
+          setFormData({ ...fetchedData, address: { value: fetchedData.address } }); // Add this line
           for (const [key, value] of Object.entries(fetchedData)) {
             setValue(key, value);
           }
-          setFormData(fetchedData);
           setProfilePictureURL(fetchedData.profilePic || '');
           setGalleryURLs(fetchedData.gallery || []);
         }
       } else {
-        console.log("No Auth");
+        console.log('No Auth');
       }
-    
+
       setLoading(false);
     };
-  
+
     fetchProfile();
   }, [setValue, auth.currentUser]);
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -105,7 +102,9 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
         {profilePictureURL && (
           <div className="profile-picture-container">
             <img src={profilePictureURL} alt="Profile pic" className="profile-picture" />
-            <button onClick={deleteProfilePic} className="delete-button">Delete Profile Picture</button>
+            <button onClick={deleteProfilePic} className="delete-button">
+              Delete Profile Picture
+            </button>
           </div>
         )}
 
@@ -125,7 +124,7 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
                 country: ['us'],
               },
             }}
-            className="google-places-autocomplete"
+            defaultValue={formData.address?.value}
           />
 
           <label className="occupation-label">
@@ -147,8 +146,8 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
             label="About Me"
             id="textAreaExample"
             rows={6}
-            value={formData.aboutMe}
-            className="about-me-textarea"
+            onChange={(e) => setValue('aboutMe', e.target.value)}
+            defaultValue={formData.aboutMe} // Use fetched data as defaultValue
           />
           <MDBInput {...register('phoneNumber')} label="Phone number" id="typePhone" type="tel" />
           <MDBInput {...register('email')} label="Email" id="typeEmail" type="email" />
@@ -156,7 +155,9 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
           {galleryURLs.map((url, index) => (
             <div key={index} className="gallery-image-container">
               <img src={url} alt={`Gallery pic ${index}`} className="gallery-image" />
-              <button onClick={() => deleteGalleryPic(url)} className="delete-button">Delete Picture</button>
+              <button onClick={() => deleteGalleryPic(url)} className="delete-button">
+                Delete Picture
+              </button>
             </div>
           ))}
 
@@ -167,6 +168,4 @@ const UserRegister = forwardRef(({ isScriptLoadSucceed }, ref) => {
   );
 });
 
-export default makeAsyncScriptLoader(
-  `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
-)(UserRegister);
+export default UserRegister;

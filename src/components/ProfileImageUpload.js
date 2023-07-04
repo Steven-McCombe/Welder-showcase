@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { MDBBtn, MDBContainer, MDBInput, MDBTypography } from 'mdb-react-ui-kit';
 
 const ProfileImageUpload = ({ handleImageURL }) => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -38,10 +39,13 @@ const ProfileImageUpload = ({ handleImageURL }) => {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleImageUpload} multiple={false} />
-      <button onClick={handleUploadSubmit}>Upload</button>
-    </div>
+    <MDBContainer className='my-2 border p-4'>
+      <MDBTypography>Upload ProfilePicture</MDBTypography>
+      <MDBContainer className='d-flex'>
+      <MDBInput type="file" onChange={handleImageUpload} multiple={false} />
+      <MDBBtn onClick={handleUploadSubmit}>Upload</MDBBtn>
+    </MDBContainer>
+    </MDBContainer>
   );
 };
 
