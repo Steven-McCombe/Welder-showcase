@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import UserProfile from './UserProfile';
+import UserCard from './UserCard';
+import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBContainer } from 'mdb-react-ui-kit';
 
-function UserList() {
-  const [Users, setUsers] = useState([]);
+const UserList = () => {
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const UsersCollection = collection(db, 'users');
-      const UsersSnapshot = await getDocs(UsersCollection);
-      const userList = UsersSnapshot.docs.map(doc => doc.data());
+      const usersRef = collection(db, 'users');
+      const snapshot = await getDocs(usersRef);
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
     };
 
@@ -18,12 +19,15 @@ function UserList() {
   }, []);
 
   return (
-    <div>
-      {Users.map((user, index) => (
-        <UserProfile key={index} user={user} />
-      ))}
-    </div>
+    <MDBContainer>
+      <h1>User List</h1>
+      <div className="user-cards-container">
+        {users.map((user) => (
+          <UserCard key={user.id} user={user} />
+        ))}
+      </div>
+    </MDBContainer>
   );
-}
+};
 
 export default UserList;
